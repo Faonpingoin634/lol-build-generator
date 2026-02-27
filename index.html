@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Générateur de Build LoL</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <nav class="navbar">
+        <a href="index.html"
+          ><div class="logo">
+            <img class="logo-img" src="assets/logo_onglets.png" alt="logo" />LoL
+            Build Generator
+          </div>
+        </a>
+        <ul class="nav-links">
+          <li><a href="index.html" class="active">Générateur</a></li>
+          <li><a href="a-propos.html">À propos du projet</a></li>
+          <li>
+            <a href="https://github.com/Faonpingoin634" target="_blank"
+              >Mon GitHub</a
+            >
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <h1>Générateur de Build Aléatoire</h1>
+
+      <div class="entete-build">
+        <div id="champion-zone" class="champion-container"></div>
+        <div id="runes-zone" class="runes-container"></div>
+      </div>
+
+      <h2>Équipement</h2>
+      <div id="inventaire"></div>
+
+      <button id="btn-relancer">Générer un nouveau build</button>
+
+      <div id="tooltip"></div>
+    </main>
+    <footer>
+      <div class="footer-contenu">
+        <div class="footer-section">
+          <h3>LoL Build Generator</h3>
+          <p>Projet développé par <strong>Faonpingoin634</strong>.</p>
+          <p>Générateur aléatoire propulsé par l'API officielle Data Dragon.</p>
+        </div>
+
+        <div class="footer-section liens-rapides">
+          <h3>Liens utiles</h3>
+          <ul>
+            <li><a href="a-propos.html">Comment ça marche ? (À propos)</a></li>
+            <li>
+              <a href="https://github.com/Faonpingoin634" target="_blank"
+                >Mon GitHub</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <hr class="footer-ligne" />
+
+      <div class="footer-bas">
+        <p class="disclaimer">
+          Mon Projet n'est pas approuvé par Riot Games et ne reflète pas les
+          points de vue ou les opinions de Riot Games ou de toute personne
+          officiellement impliquée dans la production ou la gestion des
+          propriétés de Riot Games. Riot Games et toutes les propriétés
+          associées sont des marques commerciales ou des marques déposées de
+          Riot Games, Inc.
+        </p>
+        <p class="copyright">
+          &copy; 2026 - LoL Build Generator. Tous droits réservés.
+        </p>
+      </div>
+    </footer>
+
+    <script src="api_items.js"></script>
+  </body>
+</html>

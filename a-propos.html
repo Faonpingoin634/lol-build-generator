@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>À propos - Générateur de Build LoL</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <nav class="navbar">
+        <a href="index.html">
+          <div class="logo">
+            <img class="logo-img" src="assets/logo_onglets.png" alt="logo" />LoL
+            Build Generator
+          </div>
+        </a>
+        <ul class="nav-links">
+          <li><a href="index.html">Générateur</a></li>
+          <li><a href="a-propos.html" class="active">À propos du projet</a></li>
+          <li>
+            <a href="https://github.com/Faonpingoin634" target="_blank"
+              >Mon GitHub</a
+            >
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <div class="about-container">
+        <h1>À propos du projet</h1>
+
+        <section class="about-section">
+          <h2>Le But du Projet</h2>
+          <p>
+            Ce projet est un générateur de build aléatoire pour
+            <strong>League of Legends</strong>. L'objectif est de proposer aux
+            joueurs des combinaisons inattendues (champion, sorts d'invocateur,
+            runes et objets) pour pimenter leurs parties entre amis ou relever
+            de nouveaux défis.
+          </p>
+        </section>
+
+        <section class="about-section">
+          <h2>Comment ça fonctionne ?</h2>
+          <p>
+            L'application est directement connectée à
+            <strong>Data Dragon</strong>, l'API officielle de Riot Games. Cela
+            signifie que le générateur est toujours à jour avec le dernier patch
+            du jeu. À chaque clic, le script JavaScript interroge les serveurs
+            de Riot pour récupérer les données brutes et les assemble
+            aléatoirement pour créer un build complet.
+          </p>
+        </section>
+
+        <section class="about-section highlight-section">
+          <h2>Le défi technique : Le nettoyage des données</h2>
+          <p>
+            Travailler avec une API en conditions réelles implique souvent de
+            devoir "nettoyer" les données. La base de données d'objets de League
+            of Legends contient de nombreux vestiges : anciens objets supprimés,
+            variantes liées à des modes de jeu temporaires (Arena, Essaim, ARAM)
+            ou doublons cachés.
+          </p>
+          <p>
+            Pour garantir que le joueur obtienne un build 100% valide et jouable
+            sur la Faille de l'Invocateur, j'ai développé un algorithme de
+            filtrage strict combiné à une
+            <strong>Blacklist par ID</strong> dynamique. Ce système traque et
+            élimine les anomalies (comme les multiples versions du
+            <em>Bouclier de roche en fusion</em> ou l'<em>Épée du divin</em>) et
+            s'assure que l'inventaire généré respecte les règles du jeu (une
+            seule paire de bottes, objets finaux uniquement).
+          </p>
+        </section>
+
+        <section class="about-section">
+          <h2>Technologies utilisées (Stack)</h2>
+          <ul style="line-height: 1.8; font-size: 1.1rem; padding-left: 20px">
+            <li>
+              <strong>HTML5 & CSS3 :</strong> Structure sémantique et design
+              responsive (Flexbox).
+            </li>
+            <li>
+              <strong>Vanilla JavaScript (ES6+) :</strong> Logique de
+              l'application, manipulation du DOM et événements sans utiliser de
+              framework lourd.
+            </li>
+            <li>
+              <strong>API Asynchrone :</strong> Utilisation de
+              <code>fetch</code>, des <code>Promises</code> et
+              <code>async/await</code> pour interroger les serveurs en temps
+              réel.
+            </li>
+          </ul>
+        </section>
+
+        <section class="about-section">
+          <h2>Évolutions futures (Roadmap)</h2>
+          <p>
+            Le générateur est 100% fonctionnel, mais j'ai déjà plusieurs idées
+            pour l'améliorer :
+          </p>
+          <ul style="line-height: 1.8; font-size: 1.1rem; padding-left: 20px">
+            <li>
+              <strong>Filtre par Rôle :</strong> Pouvoir générer un build
+              spécifique pour la Toplane, le Mid, l'ADC, etc afin de s'adapter
+              au mieux au dernière mise a jour du jeu.
+            </li>
+            <li>
+              <strong>Générateur ARAM :</strong> Un bouton dédié qui inclurait
+              les sorts et les objets exclusifs à l'Abîme Hurlant.
+            </li>
+            <li>
+              <strong>Bouton de partage :</strong> Permettre de copier le build
+              généré dans le presse-papier pour l'envoyer directement à ses amis
+              sur Discord.
+            </li>
+          </ul>
+        </section>
+
+        <section class="about-section">
+          <h2>À propos de l'auteur</h2>
+          <p>
+            Je suis <strong>Faonpingoin634</strong>, développeur et
+            joueur de League of Legends. J'ai créé ce projet pour lier ma
+            passion du jeu vidéo à mon apprentissage de la programmation,
+            notamment pour m'entraîner à manipuler des API et des algorithmes de
+            tri en JavaScript.
+          </p>
+        </section>
+      </div>
+    </main>
+
+    <footer>
+      <div class="footer-contenu">
+        <div class="footer-section">
+          <h3>LoL Build Generator</h3>
+          <p>Projet développé par <strong>Faonpingoin634</strong>.</p>
+          <p>Générateur aléatoire propulsé par l'API officielle Data Dragon.</p>
+        </div>
+
+        <div class="footer-section liens-rapides">
+          <h3>Liens utiles</h3>
+          <ul>
+            <li><a href="a-propos.html">Comment ça marche ?</a></li>
+            <li>
+              <a href="https://github.com/Faonpingoin634" target="_blank"
+                >Mon GitHub</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <hr class="footer-ligne" />
+
+      <div class="footer-bas">
+        <p class="disclaimer">
+          Mon Projet n'est pas approuvé par Riot Games et ne reflète pas les
+          points de vue ou les opinions de Riot Games ou de toute personne
+          officiellement impliquée dans la production ou la gestion des
+          propriétés de Riot Games. Riot Games et toutes les propriétés
+          associées sont des marques commerciales ou des marques déposées de
+          Riot Games, Inc.
+        </p>
+        <p class="copyright">
+          &copy; 2026 - LoL Build Generator. Tous droits réservés.
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>
