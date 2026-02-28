@@ -1,7 +1,26 @@
+:root {
+  --bg-main: #1a1a1a;
+  --bg-nav: #0a0a0c;
+  --bg-container: #2a2a2a;
+  --bg-about: #1a1a24;
+  --bg-footer: #111;
+  --bg-rune: #000;
+  --accent-gold: #c8aa6e;
+  --accent-gold-hover: #f0e6d2;
+  --accent-price: #ffcc00;
+  --text-main: white;
+  --text-muted: #a09b8c;
+  --text-footer: #ccc;
+  --text-disclaimer: #777;
+  --text-dark: #1a1a1a;
+  --border-light: #888;
+  --border-dark: #333;
+}
+
 body {
   font-family: Arial, sans-serif;
-  background-color: #1a1a1a;
-  color: white;
+  background-color: var(--bg-main);
+  color: var(--text-main);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -22,15 +41,15 @@ header {
   align-items: center;
   width: 100%;
   padding: 1rem 3rem;
-  background-color: #0a0a0c;
-  border-bottom: 2px solid #c8aa6e;
+  background-color: var(--bg-nav);
+  border-bottom: 2px solid var(--accent-gold);
   box-sizing: border-box;
 }
 
 .navbar .logo {
   font-size: 24px;
   font-weight: bold;
-  color: #c8aa6e;
+  color: var(--accent-gold);
   text-transform: uppercase;
   letter-spacing: 2px;
   display: flex;
@@ -56,7 +75,7 @@ header {
 }
 
 .nav-links a {
-  color: #a09b8c;
+  color: var(--text-muted);
   text-decoration: none;
   font-size: 16px;
   font-weight: bold;
@@ -67,7 +86,7 @@ header {
 
 .nav-links a:hover,
 .nav-links a.active {
-  color: #f0e6d2;
+  color: var(--accent-gold-hover);
   text-shadow: 0 0 8px rgba(200, 170, 110, 0.6);
 }
 
@@ -83,8 +102,8 @@ main {
 }
 
 button {
-  background-color: #c8aa6e;
-  color: #1a1a1a;
+  background-color: var(--accent-gold);
+  color: var(--text-dark);
   border: none;
   padding: 10px 20px;
   font-size: 16px;
@@ -96,7 +115,7 @@ button {
 }
 
 button:hover {
-  background-color: #f0e6d2;
+  background-color: var(--accent-gold-hover);
 }
 
 .entete-build {
@@ -113,7 +132,7 @@ button:hover {
   display: flex;
   align-items: center;
   gap: 15px;
-  background-color: #2a2a2a;
+  background-color: var(--bg-container);
   padding: 15px;
   border-radius: 10px;
   flex-wrap: wrap;
@@ -123,7 +142,7 @@ button:hover {
 .champion-sprite {
   width: 80px;
   height: 80px;
-  border: 2px solid #c8aa6e;
+  border: 2px solid var(--accent-gold);
   border-radius: 50%;
   cursor: pointer;
 }
@@ -137,7 +156,7 @@ button:hover {
 .spell-sprite {
   width: 35px;
   height: 35px;
-  border: 1px solid #c8aa6e;
+  border: 1px solid var(--accent-gold);
   border-radius: 5px;
   cursor: pointer;
 }
@@ -152,18 +171,18 @@ button:hover {
 .rune-fondamentale {
   width: 50px;
   height: 50px;
-  border: 2px solid #c8aa6e;
+  border: 2px solid var(--accent-gold);
   border-radius: 50%;
-  background-color: #000;
+  background-color: var(--bg-rune);
   cursor: pointer;
 }
 
 .rune-mineure {
   width: 30px;
   height: 30px;
-  border: 1px solid #888;
+  border: 1px solid var(--border-light);
   border-radius: 50%;
-  background-color: #000;
+  background-color: var(--bg-rune);
   cursor: pointer;
 }
 
@@ -183,7 +202,7 @@ button:hover {
 .item-sprite {
   width: 64px;
   height: 64px;
-  border: 2px solid #c8aa6e;
+  border: 2px solid var(--accent-gold);
   margin: 5px;
   border-radius: 5px;
   cursor: pointer;
@@ -192,14 +211,14 @@ button:hover {
 
 .item-sprite:hover {
   transform: scale(1.1);
-  border-color: #f0e6d2;
+  border-color: var(--accent-gold-hover);
 }
 
 #tooltip {
   position: absolute;
   background-color: rgba(10, 15, 25, 0.95);
-  border: 2px solid #c8aa6e;
-  color: #a09b8c;
+  border: 2px solid var(--accent-gold);
+  color: var(--text-muted);
   padding: 15px;
   border-radius: 5px;
   pointer-events: none;
@@ -211,21 +230,21 @@ button:hover {
 }
 
 #tooltip h4 {
-  color: #c8aa6e;
+  color: var(--accent-gold);
   margin: 0 0 5px 0;
   font-size: 16px;
   text-transform: uppercase;
 }
 
 #tooltip .prix {
-  color: #ffcc00;
+  color: var(--accent-price);
   font-size: 13px;
   margin-bottom: 10px;
 }
 
 attention {
   font-weight: bold;
-  color: #ffffff;
+  color: var(--text-main);
 }
 
 active {
@@ -240,7 +259,7 @@ passive {
 
 rules {
   font-style: italic;
-  color: #777;
+  color: var(--text-disclaimer);
 }
 
 mainText {
@@ -249,8 +268,8 @@ mainText {
 }
 
 footer {
-  background-color: #111;
-  color: #ccc;
+  background-color: var(--bg-footer);
+  color: var(--text-footer);
   padding: 40px 20px 20px;
   width: 100%;
   box-sizing: border-box;
@@ -268,7 +287,7 @@ footer {
 }
 
 .footer-section h3 {
-  color: #c8aa6e;
+  color: var(--accent-gold);
   margin-bottom: 15px;
 }
 
@@ -287,18 +306,18 @@ footer {
 }
 
 .liens-rapides ul li a {
-  color: #ccc;
+  color: var(--text-footer);
   text-decoration: none;
   transition: color 0.3s;
 }
 
 .liens-rapides ul li a:hover {
-  color: #c8aa6e;
+  color: var(--accent-gold);
 }
 
 .footer-ligne {
   border: none;
-  border-top: 1px solid #333;
+  border-top: 1px solid var(--border-dark);
   margin: 30px auto 20px;
   max-width: 1000px;
 }
@@ -306,7 +325,7 @@ footer {
 .footer-bas {
   text-align: center;
   font-size: 0.8rem;
-  color: #777;
+  color: var(--text-disclaimer);
   max-width: 800px;
   margin: 0 auto;
 }
@@ -325,7 +344,7 @@ footer {
   max-width: 1000px;
   width: 100%;
   margin: 0 auto;
-  background-color: #1a1a24;
+  background-color: var(--bg-about);
   padding: 50px;
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
@@ -335,10 +354,10 @@ footer {
 
 .about-container h1 {
   text-align: center;
-  color: #c8aa6e;
+  color: var(--accent-gold);
   margin-bottom: 50px;
   font-size: 2.5rem;
-  border-bottom: 2px solid #c8aa6e;
+  border-bottom: 2px solid var(--accent-gold);
   padding-bottom: 15px;
 }
 
@@ -347,7 +366,7 @@ footer {
 }
 
 .about-section h2 {
-  color: #f0e6d2;
+  color: var(--accent-gold-hover);
   margin-bottom: 20px;
   font-size: 1.5rem;
 }
@@ -361,12 +380,12 @@ footer {
 .highlight-section {
   background-color: rgba(200, 170, 110, 0.1);
   padding: 30px;
-  border-left: 4px solid #c8aa6e;
+  border-left: 4px solid var(--accent-gold);
   border-radius: 5px;
 }
 
 .highlight-section h2 {
-  color: #c8aa6e;
+  color: var(--accent-gold);
 }
 
 @media (max-width: 768px) {
