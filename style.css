@@ -388,6 +388,53 @@ footer {
   color: var(--accent-gold);
 }
 
+.select-role {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  background: var(--bg-container);
+  color: var(--text-main);
+  border: 1px solid var(--accent-gold);
+}
+
+.role-selector {
+  margin-top: 1rem;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.role-selector label {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+#capture-zone {
+  background-color: var(--bg-main);
+  padding: 20px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#affichage-role {
+  color: var(--accent-gold);
+  margin-bottom: 25px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-align: center;
+  font-size: 1.2rem;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 @media (max-width: 768px) {
   .navbar {
     flex-direction: column;

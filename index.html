@@ -8,12 +8,13 @@
       content="Générateur de builds aléatoires pour League of Legends. Obtenez un champion, des runes et un équipement au hasard pour pimenter vos parties !" />
     <title>Générateur de Build LoL</title>
     <link rel="stylesheet" href="style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   </head>
   <body>
     <header>
       <nav class="navbar">
-        <a href="index.html"
-          ><div class="logo">
+        <a href="index.html">
+          <div class="logo">
             <img class="logo-img" src="assets/logo_onglets.png" alt="logo" />LoL
             Build Generator
           </div>
@@ -33,18 +34,38 @@
     <main>
       <h1>Générateur de Build Aléatoire</h1>
 
-      <div class="entete-build">
-        <div id="champion-zone" class="champion-container"></div>
-        <div id="runes-zone" class="runes-container"></div>
+      <div class="role-selector">
+        <label for="select-role">Choisir un rôle :</label>
+        <select id="select-role" class="select-role">
+          <option value="aleatoire">Aléatoire (Classique)</option>
+          <option value="top">Top</option>
+          <option value="jungle">Jungle</option>
+          <option value="mid">Mid</option>
+          <option value="adc">ADC</option>
+          <option value="support">Support</option>
+        </select>
       </div>
 
-      <h2>Équipement</h2>
-      <div id="inventaire"></div>
+      <div id="capture-zone">
+        <h2 id="affichage-role">Rôle : Aléatoire (Classique)</h2>
 
-      <button id="btn-relancer">Générer un nouveau build</button>
+        <div class="entete-build">
+          <div id="champion-zone" class="champion-container"></div>
+          <div id="runes-zone" class="runes-container"></div>
+        </div>
+
+        <h2>Équipement</h2>
+        <div id="inventaire"></div>
+      </div>
+
+      <div class="action-buttons">
+        <button id="btn-relancer">Générer un nouveau build</button>
+        <button id="btn-partager">Télécharger l'image</button>
+      </div>
 
       <div id="tooltip"></div>
     </main>
+
     <footer>
       <div class="footer-contenu">
         <div class="footer-section">

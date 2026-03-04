@@ -67,49 +67,30 @@ class BuildGenerator {
       "3020",
       "3047",
       "3111",
-      "3117",
       "3158",
       "3200",
       "3202",
     ];
     this.itemsBannis = [
-      // --- ARMES TROLLS / ÉVÉNEMENTS SPÉCIAUX (ARENA, PVE, ETC.) ---
-      "3005",
-      "663039", // Jugement d'Atma
-      "3131",
-      "663060", // Épée du divin
-      "3133",
-      "3400",
-      "667101", // Lame du parieur (dont mode PvE Veigar)
-      "3420",
-      "447112",
-      "667112", // Nécrophage
-      "124011",
-      "664011", // Épée de l'aube
-      "663056", // Couronne du Roi-démon (Arena / Faker)
-      "663059", // Manteau de nuit étoilée (Arena / PvE)
-      "6697",
-      "126697",
-      "667109", // Cruauté (Toutes versions : Hubris & Météore)
-      "663193", // Lithoplastron de gargouille (Ancien item / Arena)
-
-      // --- AMÉLIORATIONS D'ORNN BUGGÉES & VARIANTES ---
-      "7004",
-      "3373",
-      "223204",
-      "663058", // Bouclier de roche en fusion (Toutes versions)
-      "3068", // Cape solaire (doublon)
-
-      // --- FAMILLE DU GARDIEN (ARAM & ARENA) ---
-      "3184",
-      "3177", // Lame du gardien
-      "3111",
-      "3112", // Orbe du gardien
-      "3181", // Marteau du gardien
-      "2051", // Corne du gardien
-      "2049", // Amulette du gardien
-      "2050", // Suaire du gardien
-      "223185", // Dague du gardien
+      "663039",
+      "663060",
+      "667101",
+      "667112",
+      "664011",
+      "663056",
+      "663059",
+      "667109",
+      "663193",
+      "664644",
+      "663058",
+      "3068",
+      "3177",
+      "3112",
+      "3181",
+      "2051",
+      "2049",
+      "2050",
+      "223185",
     ];
   }
 
@@ -117,7 +98,7 @@ class BuildGenerator {
     return array[Math.floor(Math.random() * array.length)];
   }
 
-  genererChampionEtSorts() {
+  genererChampionEtSorts(role) {
     const tousLesChamps = this.riotApiService.getChampions();
     const tousLesSpells = this.riotApiService.getSpells();
 
@@ -125,15 +106,28 @@ class BuildGenerator {
     const idChampionChoisi = this._getRandomElement(idsChamps);
     const championData = tousLesChamps[idChampionChoisi];
 
-    const idsSpellsValides = Object.keys(tousLesSpells).filter((id) =>
+    let idsSpellsValides = Object.keys(tousLesSpells).filter((id) =>
       tousLesSpells[id].modes?.includes("CLASSIC"),
     );
 
-    const idSpell1 = this._getRandomElement(idsSpellsValides);
-    let idSpell2 = this._getRandomElement(idsSpellsValides);
+    let idSpell1, idSpell2;
 
-    while (idSpell1 === idSpell2) {
+    if (role === "jungle") {
+      idSpell1 = "SummonerSmite";
+      idsSpellsValides = idsSpellsValides.filter(
+        (id) => id !== "SummonerSmite",
+      );
       idSpell2 = this._getRandomElement(idsSpellsValides);
+    } else {
+      idsSpellsValides = idsSpellsValides.filter(
+        (id) => id !== "SummonerSmite",
+      );
+      idSpell1 = this._getRandomElement(idsSpellsValides);
+      idSpell2 = this._getRandomElement(idsSpellsValides);
+
+      while (idSpell1 === idSpell2) {
+        idSpell2 = this._getRandomElement(idsSpellsValides);
+      }
     }
 
     return {
@@ -174,7 +168,7 @@ class BuildGenerator {
     };
   }
 
-  genererInventaire() {
+  genererInventaire(role) {
     const tousLesItems = this.riotApiService.getItems();
     let bottesDisponibles = [];
     let itemsValides = [];
@@ -216,7 +210,14 @@ class BuildGenerator {
     let nomsDejaPris = [];
     let tentatives = 0;
 
-    while (objetsChoisis.length < 5 && tentatives < 1000) {
+    let nbItems = 5;
+    if (role === "adc") {
+      nbItems = 6;
+    } else if (role === "support") {
+      nbItems = 4;
+    }
+
+    while (objetsChoisis.length < nbItems && tentatives < 1000) {
       const itemCandidat = this._getRandomElement(itemsValides);
 
       if (!nomsDejaPris.includes(itemCandidat.name)) {
@@ -239,11 +240,11 @@ class BuildGenerator {
     return inventaireFinal;
   }
 
-  genererBuildComplet() {
+  genererBuildComplet(role) {
     return {
-      championEtSorts: this.genererChampionEtSorts(),
+      championEtSorts: this.genererChampionEtSorts(role),
       runes: this.genererRunes(),
-      inventaire: this.genererInventaire(),
+      inventaire: this.genererInventaire(role),
     };
   }
 }
@@ -255,6 +256,10 @@ class BuildView {
     this.conteneurInventaire = document.getElementById("inventaire");
     this.tooltip = document.getElementById("tooltip");
     this.boutonRelancer = document.getElementById("btn-relancer");
+    this.selectRole = document.getElementById("select-role");
+    this.boutonPartager = document.getElementById("btn-partager");
+    this.captureZone = document.getElementById("capture-zone");
+    this.affichageRole = document.getElementById("affichage-role");
 
     this._initTooltips();
   }
@@ -350,6 +355,9 @@ class BuildController {
     this.view.boutonRelancer.addEventListener("click", () =>
       this.relancerLeBuild(),
     );
+    this.view.boutonPartager.addEventListener("click", () =>
+      this.partagerLeBuild(),
+    );
   }
 
   async demarrer() {
@@ -359,8 +367,42 @@ class BuildController {
   }
 
   relancerLeBuild() {
-    const nouveauBuild = this.buildGenerator.genererBuildComplet();
-    this.view.afficherBuild(nouveauBuild, this.apiService.getPatchActuel());
+    const roleChoisi = this.view.selectRole.value;
+
+    if (roleChoisi === "aleatoire") {
+      const rolesPossibles = ["top", "jungle", "mid", "adc", "support"];
+      const roleSecret =
+        rolesPossibles[Math.floor(Math.random() * rolesPossibles.length)];
+      const nouveauBuild = this.buildGenerator.genererBuildComplet(roleSecret);
+
+      const nomRole = roleSecret.charAt(0).toUpperCase() + roleSecret.slice(1);
+      this.view.affichageRole.innerText = `Rôle : ${nomRole} (Aléatoire)`;
+
+      this.view.afficherBuild(nouveauBuild, this.apiService.getPatchActuel());
+    } else {
+      const texteRole =
+        this.view.selectRole.options[this.view.selectRole.selectedIndex].text;
+      this.view.affichageRole.innerText = `Rôle : ${texteRole}`;
+
+      const nouveauBuild = this.buildGenerator.genererBuildComplet(roleChoisi);
+      this.view.afficherBuild(nouveauBuild, this.apiService.getPatchActuel());
+    }
+  }
+
+  async partagerLeBuild() {
+    try {
+      const canvas = await html2canvas(this.view.captureZone, {
+        backgroundColor: "#1a1a1a",
+        useCORS: true,
+      });
+      const image = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.href = image;
+      link.download = "mon-build-lol.png";
+      link.click();
+    } catch (error) {
+      console.error(error);
+    }
   }
 }
 
