@@ -377,6 +377,12 @@ footer {
   margin-bottom: 15px;
 }
 
+.about-section ul {
+  line-height: 1.8;
+  font-size: 1.1rem;
+  padding-left: 20px;
+}
+
 .highlight-section {
   background-color: rgba(200, 170, 110, 0.1);
   padding: 30px;
