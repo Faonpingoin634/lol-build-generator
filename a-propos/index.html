@@ -8,39 +8,54 @@
       content="Découvrez le fonctionnement et les technologies derrière le générateur de builds aléatoires pour League of Legends créé par Faonpingoin634." />
     <title>À propos - Générateur de Build LoL</title>
     <link rel="preconnect" href="https://ddragon.leagueoflegends.com" />
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "lol-bg":         "#1a1a1a",
+              "lol-nav":        "#0a0a0c",
+              "lol-card":       "#2a2a2a",
+              "lol-gold":       "#c8aa6e",
+              "lol-gold-light": "#f0e6d2",
+              "lol-muted":      "#a09b8c",
+              "lol-footer":     "#111111",
+              "lol-about-bg":   "#1a1a24",
+            },
+          },
+        },
+      };
+    </script>
     <link rel="stylesheet" href="../style.css" />
+    <link rel="icon" type="image/png" href="../assets/Favicon.png" />
   </head>
-  <body>
-    <header>
-      <nav class="navbar">
-        <a href="/">
-          <div class="logo">
-            <img
-              class="logo-img"
-              src="../assets/logo_onglets.png"
-              alt="logo" />LoL Build Generator
+  <body class="font-sans bg-lol-bg text-white flex flex-col items-center min-h-screen m-0 p-0 box-border">
+
+    <header class="w-full mb-12">
+      <nav class="flex flex-wrap justify-between items-center w-full px-12 py-4 bg-lol-nav border-b-2 border-lol-gold box-border gap-4">
+        <a href="/" class="no-underline">
+          <div class="text-2xl font-bold text-lol-gold uppercase tracking-widest flex items-center">
+            <img class="w-16 h-14 mr-4" src="../assets/logo_onglets.png" alt="logo" />LoL Build Generator
           </div>
         </a>
-        <ul class="nav-links">
-          <li><a href="/">Générateur</a></li>
-          <li><a href="/a-propos/" class="active">À propos du projet</a></li>
-          <li>
-            <a href="https://github.com/Faonpingoin634" target="_blank"
-              >Mon GitHub</a
-            >
-          </li>
+        <ul class="list-none flex flex-wrap justify-center gap-8 m-0 p-0">
+          <li><a href="/" class="text-lol-muted no-underline text-base font-bold transition-colors hover:text-lol-gold-light">Classique</a></li>
+          <li><a href="/aram/" class="text-lol-muted no-underline text-base font-bold transition-colors hover:text-lol-gold-light">ARAM</a></li>
+          <li><a href="/a-propos/" class="nav-active text-lol-muted no-underline text-base font-bold transition-colors hover:text-lol-gold-light">À propos</a></li>
+          <li><a href="https://github.com/Faonpingoin634" target="_blank" class="text-lol-muted no-underline text-base font-bold transition-colors hover:text-lol-gold-light">Mon GitHub</a></li>
         </ul>
       </nav>
     </header>
 
-    <main>
-      <div class="about-container">
-        <h1>À propos du projet</h1>
+    <main class="flex-1 w-full max-w-[1000px] flex flex-col items-center px-5 pb-16 box-border">
+      <div class="w-full bg-lol-about-bg p-[50px] rounded-xl shadow-[0_4px_15px_rgba(0,0,0,0.5)] text-[#e0e0e0] box-border">
 
-        <section class="about-section">
-          <h2>Le But du Projet</h2>
-          <p>
+        <h1 class="text-center text-lol-gold mb-[50px] text-4xl border-b-2 border-lol-gold pb-4">À propos du projet</h1>
+
+        <section class="mb-[60px]">
+          <h2 class="text-lol-gold-light mb-5 text-2xl">Le But du Projet</h2>
+          <p class="leading-loose text-[1.1rem] mb-4">
             Ce projet est un générateur de build aléatoire pour
             <strong>League of Legends</strong>. L'objectif est de proposer aux
             joueurs des combinaisons inattendues (champion, sorts d'invocateur,
@@ -52,9 +67,9 @@
           </p>
         </section>
 
-        <section class="about-section">
-          <h2>Comment ça fonctionne ?</h2>
-          <p>
+        <section class="mb-[60px]">
+          <h2 class="text-lol-gold-light mb-5 text-2xl">Comment ça fonctionne ?</h2>
+          <p class="leading-loose text-[1.1rem] mb-4">
             L'application est directement connectée à
             <strong>Data Dragon</strong>, l'API officielle de Riot Games. Cela
             signifie que le générateur est toujours à jour avec le dernier patch
@@ -64,16 +79,16 @@
           </p>
         </section>
 
-        <section class="about-section highlight-section">
-          <h2>Le défi technique : Le nettoyage des données</h2>
-          <p>
+        <section class="mb-[60px] bg-[rgba(200,170,110,0.1)] p-8 border-l-4 border-lol-gold rounded">
+          <h2 class="text-lol-gold mb-5 text-2xl">Le défi technique : Le nettoyage des données</h2>
+          <p class="leading-loose text-[1.1rem] mb-4">
             Travailler avec une API en conditions réelles implique souvent de
             devoir "nettoyer" les données. La base de données d'objets de League
             of Legends contient de nombreux vestiges : anciens objets supprimés,
             variantes liées à des modes de jeu temporaires (Arena, Essaim, ARAM)
             ou doublons cachés.
           </p>
-          <p>
+          <p class="leading-loose text-[1.1rem] mb-4">
             Pour garantir que le joueur obtienne un build 100% valide et jouable
             sur la Faille de l'Invocateur, j'ai développé un algorithme de
             filtrage strict combiné à une
@@ -85,60 +100,31 @@
           </p>
         </section>
 
-        <section class="about-section">
-          <h2>Technologies utilisées (Stack)</h2>
-          <ul>
-            <li>
-              <strong>HTML5 & CSS3 :</strong> Structure sémantique et design
-              responsive (Flexbox).
-            </li>
-            <li>
-              <strong>Vanilla JavaScript (ES6+) :</strong> Logique de
-              l'application, manipulation du DOM et événements sans utiliser de
-              framework lourd.
-            </li>
-            <li>
-              <strong>API Asynchrone :</strong> Utilisation de
-              <code>fetch</code>, des <code>Promises</code> et
-              <code>async/await</code> pour interroger les serveurs en temps
-              réel.
-            </li>
-            <li>
-              <strong>html2canvas :</strong> Librairie externe intégrée pour
-              capturer le DOM et générer une image téléchargeable du build,
-              facilitant le partage.
-            </li>
+        <section class="mb-[60px]">
+          <h2 class="text-lol-gold-light mb-5 text-2xl">Technologies utilisées (Stack)</h2>
+          <ul class="leading-loose text-[1.1rem] pl-5">
+            <li><strong>HTML5 & CSS3 :</strong> Structure sémantique et design responsive via <strong>Tailwind CSS</strong>.</li>
+            <li><strong>Vanilla JavaScript (ES6+) :</strong> Architecture MVC, POO avec héritage, manipulation du DOM et modules ES6.</li>
+            <li><strong>API Asynchrone :</strong> Utilisation de <code>fetch</code>, des <code>Promises</code> et <code>async/await</code> pour interroger les serveurs en temps réel.</li>
+            <li><strong>html2canvas :</strong> Librairie externe pour capturer le DOM et générer une image téléchargeable du build.</li>
+            <li><strong>LocalStorage :</strong> Persistance de l'historique des 5 derniers builds entre les sessions.</li>
           </ul>
         </section>
 
-        <section class="about-section">
-          <h2>Évolutions futures (Roadmap)</h2>
-          <p>
-            Après avoir implémenté le système de rôles et l'exportation
-            d'images, voici mes prochaines idées pour améliorer le générateur :
+        <section class="mb-[60px]">
+          <h2 class="text-lol-gold-light mb-5 text-2xl">Évolutions futures (Roadmap)</h2>
+          <p class="leading-loose text-[1.1rem] mb-4">
+            Après avoir implémenté le système de rôles, la page ARAM, l'historique et les filtres avancés, voici les prochaines idées :
           </p>
-          <ul>
-            <li>
-              <strong>Générateur ARAM :</strong> Un bouton dédié qui inclurait
-              les sorts (Marquage/Raccourci) et les objets exclusifs à l'Abîme
-              Hurlant.
-            </li>
-            <li>
-              <strong>Historique des builds :</strong> Utiliser le
-              <code>LocalStorage</code> du navigateur pour sauvegarder les
-              derniers builds générés et éviter de les perdre.
-            </li>
-            <li>
-              <strong>Filtres avancés :</strong> Permettre d'exclure certains
-              types de champions (ex: ne générer que des Mages) ou de forcer un
-              type de dégâts.
-            </li>
+          <ul class="leading-loose text-[1.1rem] pl-5">
+            <li><strong>Mode Arène :</strong> Un générateur dédié au mode Arena avec ses propres règles d'objets.</li>
+            <li><strong>Partage de lien :</strong> Générer une URL unique pour partager un build spécifique.</li>
           </ul>
         </section>
 
-        <section class="about-section">
-          <h2>À propos de l'auteur</h2>
-          <p>
+        <section class="mb-[60px]">
+          <h2 class="text-lol-gold-light mb-5 text-2xl">À propos de l'auteur</h2>
+          <p class="leading-loose text-[1.1rem] mb-4">
             Je suis <strong>Faonpingoin634</strong>, développeur et joueur de
             League of Legends. J'ai créé ce projet pour lier ma passion du jeu
             vidéo à mon apprentissage de la programmation, notamment pour
@@ -146,45 +132,33 @@
             JavaScript, et l'intégration de librairies tierces.
           </p>
         </section>
+
       </div>
     </main>
 
-    <footer>
-      <div class="footer-contenu">
-        <div class="footer-section">
-          <h3>LoL Build Generator</h3>
-          <p>Projet développé par <strong>Faonpingoin634</strong>.</p>
-          <p>Générateur aléatoire propulsé par l'API officielle Data Dragon.</p>
+    <footer class="bg-lol-footer text-[#cccccc] pt-10 px-5 pb-5 w-full box-border font-sans mt-auto">
+      <div class="flex justify-around flex-wrap max-w-[1000px] mx-auto gap-5">
+        <div>
+          <h3 class="text-lol-gold mb-4">LoL Build Generator</h3>
+          <p class="text-sm leading-relaxed">Projet développé par <strong>Faonpingoin634</strong>.</p>
+          <p class="text-sm leading-relaxed">Générateur aléatoire propulsé par l'API officielle Data Dragon.</p>
         </div>
-
-        <div class="footer-section liens-rapides">
-          <h3>Liens utiles</h3>
-          <ul>
-            <li><a href="/a-propos/" class="active">À propos du projet</a></li>
-            <li>
-              <a href="https://github.com/Faonpingoin634" target="_blank"
-                >Mon GitHub</a
-              >
-            </li>
+        <div>
+          <h3 class="text-lol-gold mb-4">Liens utiles</h3>
+          <ul class="list-none p-0">
+            <li class="mb-2.5"><a href="/a-propos/" class="text-[#cccccc] no-underline transition-colors hover:text-lol-gold">À propos du projet</a></li>
+            <li class="mb-2.5"><a href="https://github.com/Faonpingoin634" target="_blank" class="text-[#cccccc] no-underline transition-colors hover:text-lol-gold">Mon GitHub</a></li>
           </ul>
         </div>
       </div>
-
-      <hr class="footer-ligne" />
-
-      <div class="footer-bas">
-        <p class="disclaimer">
-          Mon Projet n'est pas approuvé par Riot Games et ne reflète pas les
-          points de vue ou les opinions de Riot Games ou de toute personne
-          officiellement impliquée dans la production ou la gestion des
-          propriétés de Riot Games. Riot Games et toutes les propriétés
-          associées sont des marques commerciales ou des marques déposées de
-          Riot Games, Inc.
+      <hr class="border-0 border-t border-[#333333] my-7 mx-auto max-w-[1000px]" />
+      <div class="text-center text-xs text-[#777777] max-w-[800px] mx-auto">
+        <p class="mb-4 leading-snug italic">
+          Mon Projet n'est pas approuvé par Riot Games et ne reflète pas les points de vue ou les opinions de Riot Games ou de toute personne officiellement impliquée dans la production ou la gestion des propriétés de Riot Games. Riot Games et toutes les propriétés associées sont des marques commerciales ou des marques déposées de Riot Games, Inc.
         </p>
-        <p class="copyright">
-          &copy; 2026 - LoL Build Generator. Tous droits réservés.
-        </p>
+        <p class="font-bold">&copy; 2026 - LoL Build Generator. Tous droits réservés.</p>
       </div>
     </footer>
+
   </body>
 </html>

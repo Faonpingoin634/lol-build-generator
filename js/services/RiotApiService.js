@@ -1,48 +1,49 @@
 export default class RiotApiService {
   constructor() {
-    this.patchActuel = null;
+    this.currentPatch = null;
     this.items = null;
     this.champions = null;
     this.spells = null;
     this.runes = null;
   }
 
-  async initialiser() {
-    try {
-      const reponseVersions = await fetch(
-        "https://ddragon.leagueoflegends.com/api/versions.json",
-      );
-      const versions = await reponseVersions.json();
-      const patchActuel = versions[0];
+  async initialize() {
+    const versionsResponse = await fetch(
+      "https://ddragon.leagueoflegends.com/api/versions.json",
+    );
+    if (!versionsResponse.ok) throw new Error(`HTTP ${versionsResponse.status}`);
+    const versions = await versionsResponse.json();
+    const currentPatch = versions[0];
 
-      const [reponseItems, reponseChamps, reponseSpells, reponseRunes] =
-        await Promise.all([
-          fetch(
-            `https://ddragon.leagueoflegends.com/cdn/${patchActuel}/data/fr_FR/item.json`,
-          ),
-          fetch(
-            `https://ddragon.leagueoflegends.com/cdn/${patchActuel}/data/fr_FR/champion.json`,
-          ),
-          fetch(
-            `https://ddragon.leagueoflegends.com/cdn/${patchActuel}/data/fr_FR/summoner.json`,
-          ),
-          fetch(
-            `https://ddragon.leagueoflegends.com/cdn/${patchActuel}/data/fr_FR/runesReforged.json`,
-          ),
-        ]);
+    const [itemsResponse, champsResponse, spellsResponse, runesResponse] =
+      await Promise.all([
+        fetch(
+          `https://ddragon.leagueoflegends.com/cdn/${currentPatch}/data/fr_FR/item.json`,
+        ),
+        fetch(
+          `https://ddragon.leagueoflegends.com/cdn/${currentPatch}/data/fr_FR/champion.json`,
+        ),
+        fetch(
+          `https://ddragon.leagueoflegends.com/cdn/${currentPatch}/data/fr_FR/summoner.json`,
+        ),
+        fetch(
+          `https://ddragon.leagueoflegends.com/cdn/${currentPatch}/data/fr_FR/runesReforged.json`,
+        ),
+      ]);
 
-      this.patchActuel = patchActuel;
-      this.items = (await reponseItems.json()).data;
-      this.champions = (await reponseChamps.json()).data;
-      this.spells = (await reponseSpells.json()).data;
-      this.runes = await reponseRunes.json();
-    } catch (erreur) {
-      console.error(erreur);
+    for (const response of [itemsResponse, champsResponse, spellsResponse, runesResponse]) {
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
     }
+
+    this.currentPatch = currentPatch;
+    this.items = (await itemsResponse.json()).data;
+    this.champions = (await champsResponse.json()).data;
+    this.spells = (await spellsResponse.json()).data;
+    this.runes = await runesResponse.json();
   }
 
-  getPatchActuel() {
-    return this.patchActuel;
+  getCurrentPatch() {
+    return this.currentPatch;
   }
   getItems() {
     return this.items;

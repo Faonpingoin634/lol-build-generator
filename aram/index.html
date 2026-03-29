@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Générateur de builds aléatoires pour League of Legends. Obtenez un champion, des runes et un équipement au hasard pour pimenter vos parties !" />
-    <title>Générateur de Build LoL</title>
+      content="Générateur de builds aléatoires ARAM pour League of Legends. Obtenez un champion, des runes et un équipement adapté à l'Abîme Hurlant !" />
+    <title>Générateur ARAM - LoL Build Generator</title>
     <link rel="preconnect" href="https://ddragon.leagueoflegends.com" />
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
     <script src="https://cdn.tailwindcss.com"></script>
@@ -28,8 +28,8 @@
         },
       };
     </script>
-    <link rel="stylesheet" href="style.css" />
-    <link rel="icon" type="image/png" href="assets/Favicon.png" />
+    <link rel="stylesheet" href="../style.css" />
+    <link rel="icon" type="image/png" href="../assets/Favicon.png" />
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
       defer></script>
@@ -40,12 +40,12 @@
       <nav class="flex flex-wrap justify-between items-center w-full px-12 py-4 bg-lol-nav border-b-2 border-lol-gold box-border gap-4">
         <a href="/" class="no-underline">
           <div class="text-2xl font-bold text-lol-gold uppercase tracking-widest flex items-center">
-            <img class="w-16 h-14 mr-4" src="assets/logo_onglets.png" alt="logo" />LoL Build Generator
+            <img class="w-16 h-14 mr-4" src="../assets/logo_onglets.png" alt="logo" />LoL Build Generator
           </div>
         </a>
         <ul class="list-none flex flex-wrap justify-center gap-8 m-0 p-0">
-          <li><a href="/" class="nav-active text-lol-muted no-underline text-base font-bold transition-colors hover:text-lol-gold-light">Classique</a></li>
-          <li><a href="/aram/" class="text-lol-muted no-underline text-base font-bold transition-colors hover:text-lol-gold-light">ARAM</a></li>
+          <li><a href="/" class="text-lol-muted no-underline text-base font-bold transition-colors hover:text-lol-gold-light">Classique</a></li>
+          <li><a href="/aram/" class="nav-active text-lol-muted no-underline text-base font-bold transition-colors hover:text-lol-gold-light">ARAM</a></li>
           <li><a href="/a-propos/" class="text-lol-muted no-underline text-base font-bold transition-colors hover:text-lol-gold-light">À propos</a></li>
           <li><a href="https://github.com/Faonpingoin634" target="_blank" class="text-lol-muted no-underline text-base font-bold transition-colors hover:text-lol-gold-light">Mon GitHub</a></li>
         </ul>
@@ -53,20 +53,9 @@
     </header>
 
     <main class="flex-1 w-full max-w-[1000px] flex flex-col items-center px-5 pb-16 box-border">
-      <h1 class="text-2xl font-bold mb-6">Générateur de Build Aléatoire</h1>
+      <h1 class="text-2xl font-bold mb-6">Générateur ARAM</h1>
 
       <div class="flex gap-5 flex-wrap justify-center mt-4 mb-4">
-        <div class="flex items-center gap-2.5">
-          <label for="select-role" class="font-bold">Rôle :</label>
-          <select id="select-role" class="p-2.5 text-base rounded bg-lol-card text-white border border-lol-gold cursor-pointer">
-            <option value="aleatoire">Aléatoire</option>
-            <option value="top">Top</option>
-            <option value="jungle">Jungle</option>
-            <option value="mid">Mid</option>
-            <option value="adc">ADC</option>
-            <option value="support">Support</option>
-          </select>
-        </div>
         <div class="flex items-center gap-2.5">
           <label for="select-champion-type" class="font-bold">Champion :</label>
           <select id="select-champion-type" class="p-2.5 text-base rounded bg-lol-card text-white border border-lol-gold cursor-pointer">
@@ -82,7 +71,7 @@
       </div>
 
       <div id="capture-zone" class="bg-lol-bg p-5 rounded-xl flex flex-col items-center w-full box-border">
-        <h2 id="role-display" class="text-lol-gold mb-6 uppercase tracking-widest text-center text-xl">Rôle : Aléatoire</h2>
+        <h2 id="role-display" class="text-lol-gold mb-6 uppercase tracking-widest text-center text-xl">Mode : ARAM</h2>
 
         <div class="flex gap-5 mb-8 flex-wrap justify-center w-full">
           <div id="champion-zone" class="flex items-center gap-4 bg-lol-card p-4 rounded-xl flex-wrap justify-center"></div>
@@ -131,6 +120,6 @@
       </div>
     </footer>
 
-    <script type="module" src="js/main.js"></script>
+    <script type="module" src="../js/main-aram.js"></script>
   </body>
 </html>

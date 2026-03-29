@@ -1,76 +1,178 @@
 export default class BuildView {
   constructor() {
-    this.zoneChampion = document.getElementById("champion-zone");
-    this.zoneRunes = document.getElementById("runes-zone");
-    this.conteneurInventaire = document.getElementById("inventaire");
+    this.championZone = document.getElementById("champion-zone");
+    this.runesZone = document.getElementById("runes-zone");
+    this.inventoryContainer = document.getElementById("inventory");
     this.tooltip = document.getElementById("tooltip");
-    this.boutonRelancer = document.getElementById("btn-relancer");
-    this.selectRole = document.getElementById("select-role");
-    this.boutonPartager = document.getElementById("btn-partager");
+    this.refreshButton = document.getElementById("btn-refresh");
+    this.roleSelect = document.getElementById("select-role");
+    this.championTypeSelect = document.getElementById("select-champion-type");
+    this.shareButton = document.getElementById("btn-share");
     this.captureZone = document.getElementById("capture-zone");
-    this.affichageRole = document.getElementById("affichage-role");
+    this.roleDisplay = document.getElementById("role-display");
+    this.errorMessage = document.getElementById("error-message");
+    this.historySection = document.getElementById("history-section");
 
     this._initTooltips();
   }
 
-  afficherChargement() {
-    this.zoneChampion.innerHTML = "Chargement...";
-    this.zoneRunes.innerHTML = "";
-    this.conteneurInventaire.innerHTML = "Chargement des objets...";
+  showLoading() {
+    this.championZone.innerHTML = "Chargement...";
+    this.runesZone.innerHTML = "";
+    this.inventoryContainer.innerHTML = "Chargement des objets...";
+    this.errorMessage.style.display = "none";
   }
 
-  afficherBuild(buildComplet, patchActuel) {
-    this._afficherChampion(buildComplet.championEtSorts, patchActuel);
-    this._afficherRunes(buildComplet.runes);
-    this._afficherInventaire(buildComplet.inventaire, patchActuel);
+  showError(message) {
+    this.errorMessage.textContent = message;
+    this.errorMessage.style.display = "block";
+    this.championZone.innerHTML = "";
+    this.runesZone.innerHTML = "";
+    this.inventoryContainer.innerHTML = "";
   }
 
-  _afficherChampion({ champion, sorts }, patchActuel) {
-    this.zoneChampion.innerHTML = `
-      <img src="https://ddragon.leagueoflegends.com/cdn/${patchActuel}/img/champion/${champion.id}.png" class="champion-sprite sprite-tooltip" alt="Portrait de ${champion.name}" data-title="${champion.name}" data-desc="${champion.blurb.replace(/"/g, "&quot;")}">
-      <div class="spells-container">
-          <img src="https://ddragon.leagueoflegends.com/cdn/${patchActuel}/img/spell/${sorts[0].id}.png" class="spell-sprite sprite-tooltip" alt="Sort d'invocateur ${sorts[0].name}" data-title="${sorts[0].name}" data-desc="${sorts[0].description}">
-          <img src="https://ddragon.leagueoflegends.com/cdn/${patchActuel}/img/spell/${sorts[1].id}.png" class="spell-sprite sprite-tooltip" alt="Sort d'invocateur ${sorts[1].name}" data-title="${sorts[1].name}" data-desc="${sorts[1].description}">
+  renderBuild(fullBuild, currentPatch) {
+    this.errorMessage.style.display = "none";
+    this._renderChampion(fullBuild.championAndSpells, currentPatch);
+    this._renderRunes(fullBuild.runes);
+    this._renderInventory(fullBuild.inventory, currentPatch);
+  }
+
+  renderHistory(history) {
+    if (!history || history.length === 0) {
+      this.historySection.style.display = "none";
+      return;
+    }
+
+    this.historySection.style.display = "block";
+    const baseUrl = "https://ddragon.leagueoflegends.com/cdn";
+
+    this.historySection.innerHTML = `
+      <h2 class="text-lol-gold text-base uppercase tracking-wide mb-2.5 text-center">Derniers builds</h2>
+      <ul class="list-none p-0 m-0">
+        ${history
+          .map(
+            (entry, index) => `
+          <li class="bg-lol-card rounded-lg border border-[#333] mb-2 cursor-pointer transition-colors hover:border-lol-gold focus:border-lol-gold focus:outline-none"
+              data-index="${index}" aria-expanded="false" tabindex="0" role="button"
+              aria-label="Voir le build de ${entry.championName}">
+            <div class="flex items-center gap-2 px-3 py-2">
+              <figure class="m-0">
+                <img src="${baseUrl}/${entry.patch}/img/champion/${entry.championId}.png"
+                     alt="${entry.championName}"
+                     class="w-9 h-9 rounded-full border border-lol-gold" />
+              </figure>
+              <div class="flex flex-col">
+                <span class="text-sm font-bold text-white">${entry.championName}</span>
+                <span class="text-xs text-lol-gold">${entry.role.toUpperCase()}</span>
+              </div>
+              <span class="ml-auto text-lol-gold text-base" aria-hidden="true">▾</span>
+            </div>
+            <div class="history-items-panel flex flex-wrap gap-1.5 px-3 pt-2.5 pb-3 border-t border-[#333]" hidden>
+              ${entry.items
+                .map(
+                  (item) => `
+                <figure class="m-0 text-center w-[52px]">
+                  <img src="${baseUrl}/${entry.patch}/img/item/${item.imageFile}"
+                       alt="${item.name}"
+                       title="${item.name} — ${item.price} PO"
+                       class="w-11 h-11 border border-lol-gold rounded block" />
+                  <figcaption class="text-[0.55rem] text-lol-muted mt-0.5 leading-tight line-clamp-2">${item.name}</figcaption>
+                </figure>
+              `,
+                )
+                .join("")}
+            </div>
+          </li>
+        `,
+          )
+          .join("")}
+      </ul>
+    `;
+
+    this.historySection.querySelectorAll("li[role='button']").forEach((card) => {
+      const toggle = () => {
+        const expanded = card.getAttribute("aria-expanded") === "true";
+        card.setAttribute("aria-expanded", String(!expanded));
+        card.querySelector(".history-items-panel").hidden = expanded;
+        card.querySelector("span[aria-hidden]").textContent = expanded ? "▾" : "▴";
+      };
+      card.addEventListener("click", toggle);
+      card.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          toggle();
+        }
+      });
+    });
+  }
+
+  _renderChampion({ champion, spells }, currentPatch) {
+    this.championZone.innerHTML = `
+      <img src="https://ddragon.leagueoflegends.com/cdn/${currentPatch}/img/champion/${champion.id}.png"
+           class="w-20 h-20 border-2 border-lol-gold rounded-full cursor-pointer sprite-tooltip"
+           alt="Portrait de ${champion.name}"
+           data-title="${champion.name}"
+           data-desc="${champion.blurb.replace(/"/g, "&quot;")}">
+      <div class="flex flex-col gap-1">
+        <img src="https://ddragon.leagueoflegends.com/cdn/${currentPatch}/img/spell/${spells[0].id}.png"
+             class="w-9 h-9 border border-lol-gold rounded cursor-pointer sprite-tooltip"
+             alt="Sort ${spells[0].name}"
+             data-title="${spells[0].name}"
+             data-desc="${spells[0].description}">
+        <img src="https://ddragon.leagueoflegends.com/cdn/${currentPatch}/img/spell/${spells[1].id}.png"
+             class="w-9 h-9 border border-lol-gold rounded cursor-pointer sprite-tooltip"
+             alt="Sort ${spells[1].name}"
+             data-title="${spells[1].name}"
+             data-desc="${spells[1].description}">
       </div>
-      <h2 style="margin-left: 10px;">${champion.name}</h2>
+      <h2 class="ml-2.5">${champion.name}</h2>
     `;
   }
 
-  _afficherRunes(runes) {
-    const bU = "https://ddragon.leagueoflegends.com/cdn/img/";
-    const cR = (r, c) =>
-      `<img src="${bU}${r.icon}" class="${c} sprite-tooltip" alt="Rune ${r.name}" data-title="${r.name}" data-desc="${r.longDesc.replace(/"/g, "&quot;")}">`;
+  _renderRunes(runes) {
+    const baseUrl = "https://ddragon.leagueoflegends.com/cdn/img/";
+    const createRuneImg = (rune, isKeystone) => {
+      const sizeClass = isKeystone
+        ? "w-12 h-12 border-2 border-lol-gold"
+        : "w-8 h-8 border border-[#888888]";
+      return `<img src="${baseUrl}${rune.icon}"
+                   class="${sizeClass} rounded-full bg-black cursor-pointer sprite-tooltip"
+                   alt="Rune ${rune.name}"
+                   data-title="${rune.name}"
+                   data-desc="${rune.longDesc.replace(/"/g, "&quot;")}">`;
+    };
 
-    const aP = runes.arbrePrincipal;
-    const aS = runes.arbreSecondaire;
+    const primary = runes.primaryTree;
+    const secondary = runes.secondaryTree;
 
-    this.zoneRunes.innerHTML = `
-      <div class="rune-colonne">
-        <img src="${bU}${aP.donnees.icon}" class="arbre-icon" alt="Arbre principal ${aP.donnees.name}">
-        ${cR(aP.runes[0], "rune-fondamentale")}
-        ${cR(aP.runes[1], "rune-mineure")}
-        ${cR(aP.runes[2], "rune-mineure")}
-        ${cR(aP.runes[3], "rune-mineure")}
+    this.runesZone.innerHTML = `
+      <div class="flex flex-col items-center gap-2">
+        <img src="${baseUrl}${primary.data.icon}" class="w-6 h-6 mb-1" alt="Arbre ${primary.data.name}">
+        ${createRuneImg(primary.runes[0], true)}
+        ${createRuneImg(primary.runes[1], false)}
+        ${createRuneImg(primary.runes[2], false)}
+        ${createRuneImg(primary.runes[3], false)}
       </div>
-      <div class="rune-colonne" style="margin-top:30px;">
-        <img src="${bU}${aS.donnees.icon}" class="arbre-icon" alt="Arbre secondaire ${aS.donnees.name}">
-        ${cR(aS.runes[0], "rune-mineure")}
-        ${cR(aS.runes[1], "rune-mineure")}
+      <div class="flex flex-col items-center gap-2 mt-8">
+        <img src="${baseUrl}${secondary.data.icon}" class="w-6 h-6 mb-1" alt="Arbre ${secondary.data.name}">
+        ${createRuneImg(secondary.runes[0], false)}
+        ${createRuneImg(secondary.runes[1], false)}
       </div>
     `;
   }
 
-  _afficherInventaire(inventaire, patchActuel) {
-    this.conteneurInventaire.innerHTML = "";
-    inventaire.forEach((item) => {
-      let img = document.createElement("img");
-      img.src = `https://ddragon.leagueoflegends.com/cdn/${patchActuel}/img/item/${item.image.full}`;
-      img.className = "item-sprite sprite-tooltip";
+  _renderInventory(inventory, currentPatch) {
+    this.inventoryContainer.innerHTML = "";
+    inventory.forEach((item) => {
+      const img = document.createElement("img");
+      img.src = `https://ddragon.leagueoflegends.com/cdn/${currentPatch}/img/item/${item.image.full}`;
+      img.className = "w-16 h-16 border-2 border-lol-gold m-1 rounded cursor-pointer transition-transform hover:scale-110 hover:border-lol-gold-light sprite-tooltip";
       img.alt = `Objet : ${item.name}`;
       img.dataset.title = item.name;
-      img.dataset.prix = `Prix : ${item.gold.total} PO`;
+      img.dataset.price = `Prix : ${item.gold.total} PO`;
       img.dataset.desc = item.description;
-      this.conteneurInventaire.appendChild(img);
+      this.inventoryContainer.appendChild(img);
     });
   }
 
@@ -78,7 +180,7 @@ export default class BuildView {
     document.addEventListener("mouseover", (e) => {
       if (e.target.classList.contains("sprite-tooltip")) {
         this.tooltip.style.display = "block";
-        this.tooltip.innerHTML = `<h4>${e.target.dataset.title}</h4>${e.target.dataset.prix ? `<div class="prix">${e.target.dataset.prix}</div>` : ""}<div>${e.target.dataset.desc}</div>`;
+        this.tooltip.innerHTML = `<h4>${e.target.dataset.title}</h4>${e.target.dataset.price ? `<div class="price">${e.target.dataset.price}</div>` : ""}<div>${e.target.dataset.desc}</div>`;
       }
     });
     document.addEventListener("mousemove", (e) => {

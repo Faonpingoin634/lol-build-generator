@@ -1,7 +1,7 @@
 export default class BuildGenerator {
-  constructor(riotApiService) {
-    this.riotApiService = riotApiService;
-    this.idsBottes = [
+  constructor(apiService) {
+    this.apiService = apiService;
+    this.bootIds = [
       "3006",
       "3009",
       "3020",
@@ -11,7 +11,7 @@ export default class BuildGenerator {
       "3200",
       "3202",
     ];
-    this.itemsBannis = [
+    this.bannedItems = [
       "663039",
       "663060",
       "667101",
@@ -38,153 +38,170 @@ export default class BuildGenerator {
     return array[Math.floor(Math.random() * array.length)];
   }
 
-  genererChampionEtSorts(role) {
-    const tousLesChamps = this.riotApiService.getChampions();
-    const tousLesSpells = this.riotApiService.getSpells();
+  generateChampionAndSpells(role, championTypeFilter = null) {
+    const allChampions = this.apiService.getChampions();
+    const allSpells = this.apiService.getSpells();
 
-    const idsChamps = Object.keys(tousLesChamps);
-    const idChampionChoisi = this._getRandomElement(idsChamps);
-    const championData = tousLesChamps[idChampionChoisi];
+    let champIds = Object.keys(allChampions);
+    if (championTypeFilter && championTypeFilter !== "all") {
+      const filtered = champIds.filter((id) =>
+        allChampions[id].tags?.includes(championTypeFilter),
+      );
+      if (filtered.length > 0) champIds = filtered;
+    }
 
-    let idsSpellsValides = Object.keys(tousLesSpells).filter((id) =>
-      tousLesSpells[id].modes?.includes("CLASSIC"),
+    const chosenChampionId = this._getRandomElement(champIds);
+    const championData = allChampions[chosenChampionId];
+
+    const isAram = role === "aram";
+    const gameMode = isAram ? "ARAM" : "CLASSIC";
+
+    let validSpellIds = Object.keys(allSpells).filter((id) =>
+      allSpells[id].modes?.includes(gameMode),
     );
 
-    let idSpell1, idSpell2;
+    let spellId1, spellId2;
 
-    if (role === "jungle") {
-      idSpell1 = "SummonerSmite";
-      idsSpellsValides = idsSpellsValides.filter(
-        (id) => id !== "SummonerSmite",
-      );
-      idSpell2 = this._getRandomElement(idsSpellsValides);
+    if (isAram) {
+      spellId1 = this._getRandomElement(validSpellIds);
+      spellId2 = this._getRandomElement(validSpellIds);
+      while (spellId1 === spellId2) {
+        spellId2 = this._getRandomElement(validSpellIds);
+      }
+    } else if (role === "jungle") {
+      spellId1 = "SummonerSmite";
+      validSpellIds = validSpellIds.filter((id) => id !== "SummonerSmite");
+      spellId2 = this._getRandomElement(validSpellIds);
     } else {
-      idsSpellsValides = idsSpellsValides.filter(
-        (id) => id !== "SummonerSmite",
-      );
-      idSpell1 = this._getRandomElement(idsSpellsValides);
-      idSpell2 = this._getRandomElement(idsSpellsValides);
-
-      while (idSpell1 === idSpell2) {
-        idSpell2 = this._getRandomElement(idsSpellsValides);
+      validSpellIds = validSpellIds.filter((id) => id !== "SummonerSmite");
+      spellId1 = this._getRandomElement(validSpellIds);
+      spellId2 = this._getRandomElement(validSpellIds);
+      while (spellId1 === spellId2) {
+        spellId2 = this._getRandomElement(validSpellIds);
       }
     }
 
     return {
       champion: championData,
-      sorts: [tousLesSpells[idSpell1], tousLesSpells[idSpell2]],
+      spells: [allSpells[spellId1], allSpells[spellId2]],
     };
   }
 
-  genererRunes() {
-    const tousLesArbres = this.riotApiService.getRunes();
-    const arbrePrincipal = this._getRandomElement(tousLesArbres);
+  generateRunes() {
+    const allTrees = this.apiService.getRunes();
+    const primaryTree = this._getRandomElement(allTrees);
 
-    let arbreSecondaire = this._getRandomElement(tousLesArbres);
-    while (arbreSecondaire.id === arbrePrincipal.id) {
-      arbreSecondaire = this._getRandomElement(tousLesArbres);
+    let secondaryTree = this._getRandomElement(allTrees);
+    while (secondaryTree.id === primaryTree.id) {
+      secondaryTree = this._getRandomElement(allTrees);
     }
 
-    const runesPrincipales = arbrePrincipal.slots.map((slot) => {
+    const primaryRunes = primaryTree.slots.map((slot) => {
       return this._getRandomElement(slot.runes);
     });
 
-    const lignesDisponibles = [1, 2, 3];
-    const indexLigne1 = this._getRandomElement(lignesDisponibles);
+    const availableRows = [1, 2, 3];
+    const rowIndex1 = this._getRandomElement(availableRows);
 
-    let indexLigne2 = this._getRandomElement(lignesDisponibles);
-    while (indexLigne2 === indexLigne1) {
-      indexLigne2 = this._getRandomElement(lignesDisponibles);
+    let rowIndex2 = this._getRandomElement(availableRows);
+    while (rowIndex2 === rowIndex1) {
+      rowIndex2 = this._getRandomElement(availableRows);
     }
 
-    const runesSecondaires = [
-      this._getRandomElement(arbreSecondaire.slots[indexLigne1].runes),
-      this._getRandomElement(arbreSecondaire.slots[indexLigne2].runes),
+    const secondaryRunes = [
+      this._getRandomElement(secondaryTree.slots[rowIndex1].runes),
+      this._getRandomElement(secondaryTree.slots[rowIndex2].runes),
     ];
 
     return {
-      arbrePrincipal: { donnees: arbrePrincipal, runes: runesPrincipales },
-      arbreSecondaire: { donnees: arbreSecondaire, runes: runesSecondaires },
+      primaryTree: { data: primaryTree, runes: primaryRunes },
+      secondaryTree: { data: secondaryTree, runes: secondaryRunes },
     };
   }
 
-  genererInventaire(role) {
-    const tousLesItems = this.riotApiService.getItems();
-    let bottesDisponibles = [];
-    let itemsValides = [];
+  generateInventory(role) {
+    const allItems = this.apiService.getItems();
+    const isAram = role === "aram";
+    const mapId = isAram ? "12" : "11";
 
-    Object.keys(tousLesItems).forEach((id) => {
-      const item = tousLesItems[id];
+    let availableBoots = [];
+    let validItems = [];
+
+    Object.keys(allItems).forEach((id) => {
+      const item = allItems[id];
       const tags = item.tags || [];
 
-      if (this.itemsBannis.includes(String(id))) return;
+      if (this.bannedItems.includes(String(id))) return;
 
-      if (this.idsBottes.includes(String(id))) {
-        bottesDisponibles.push(item);
+      if (!isAram && this.bootIds.includes(String(id))) {
+        availableBoots.push(item);
         return;
       }
 
-      const pasUnComposant =
+      const isNotComponent =
         item.into === undefined ||
         item.into.every((upgradeId) => Number(upgradeId) >= 7000);
 
-      const estValide =
-        item.maps?.["11"] === true &&
+      const isValid =
+        item.maps?.[mapId] === true &&
         item.gold?.purchasable === true &&
-        pasUnComposant &&
+        isNotComponent &&
         item.gold?.total >= 1500 &&
         !tags.includes("Consumable") &&
         !tags.includes("Jungle") &&
         !tags.includes("Trinket") &&
         !tags.includes("Boots");
 
-      if (estValide) itemsValides.push(item);
+      if (isValid) validItems.push(item);
     });
 
-    let botteChoisie = tousLesItems["3006"];
-    if (bottesDisponibles.length > 0) {
-      botteChoisie = this._getRandomElement(bottesDisponibles);
-    }
-
-    let objetsChoisis = [];
-    let nomsDejaPris = [];
-    let tentatives = 0;
-
-    let nbItems = 5;
-    if (role === "adc") {
-      nbItems = 6;
-    } else if (role === "support") {
-      nbItems = 4;
-    }
-
-    while (objetsChoisis.length < nbItems && tentatives < 1000) {
-      const itemCandidat = this._getRandomElement(itemsValides);
-
-      if (!nomsDejaPris.includes(itemCandidat.name)) {
-        objetsChoisis.push(itemCandidat);
-        nomsDejaPris.push(itemCandidat.name);
+    let itemCount = 6;
+    if (!isAram) {
+      if (role === "adc") {
+        itemCount = 6;
+      } else if (role === "support") {
+        itemCount = 4;
+      } else {
+        itemCount = 5;
       }
-      tentatives++;
     }
 
-    let inventaireFinal = [botteChoisie, ...objetsChoisis];
+    let chosenItems = [];
+    let takenNames = [];
+    let attempts = 0;
 
-    for (let i = inventaireFinal.length - 1; i > 0; i--) {
+    while (chosenItems.length < itemCount && attempts < 1000) {
+      const candidateItem = this._getRandomElement(validItems);
+      if (!takenNames.includes(candidateItem.name)) {
+        chosenItems.push(candidateItem);
+        takenNames.push(candidateItem.name);
+      }
+      attempts++;
+    }
+
+    if (isAram) {
+      return chosenItems;
+    }
+
+    let chosenBoots = allItems["3006"];
+    if (availableBoots.length > 0) {
+      chosenBoots = this._getRandomElement(availableBoots);
+    }
+
+    let finalInventory = [chosenBoots, ...chosenItems];
+    for (let i = finalInventory.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [inventaireFinal[i], inventaireFinal[j]] = [
-        inventaireFinal[j],
-        inventaireFinal[i],
-      ];
+      [finalInventory[i], finalInventory[j]] = [finalInventory[j], finalInventory[i]];
     }
 
-    return inventaireFinal;
+    return finalInventory;
   }
 
-  genererBuildComplet(role) {
+  generateFullBuild(role, championTypeFilter = null) {
     return {
-      championEtSorts: this.genererChampionEtSorts(role),
-      runes: this.genererRunes(),
-      inventaire: this.genererInventaire(role),
+      championAndSpells: this.generateChampionAndSpells(role, championTypeFilter),
+      runes: this.generateRunes(),
+      inventory: this.generateInventory(role),
     };
   }
 }
