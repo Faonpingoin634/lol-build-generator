@@ -60,7 +60,8 @@ export default class BuildView {
               <figure class="m-0">
                 <img src="${baseUrl}/${entry.patch}/img/champion/${entry.championId}.png"
                      alt="${entry.championName}"
-                     class="w-9 h-9 rounded-full border border-lol-gold" />
+                     class="w-9 h-9 rounded-full border border-lol-gold"
+                     width="36" height="36" loading="lazy" decoding="async" />
               </figure>
               <div class="flex flex-col">
                 <span class="text-sm font-bold text-white">${entry.championName}</span>
@@ -68,7 +69,7 @@ export default class BuildView {
               </div>
               <span class="ml-auto text-lol-gold text-base" aria-hidden="true">▾</span>
             </div>
-            <div class="history-items-panel flex flex-wrap gap-1.5 px-3 pt-2.5 pb-3 border-t border-[#333]" hidden>
+            <div class="history-items-panel flex flex-wrap gap-1.5 px-3 pt-2.5 pb-3 border-t border-[#333]" style="display:none">
               ${entry.items
                 .map(
                   (item) => `
@@ -76,7 +77,8 @@ export default class BuildView {
                   <img src="${baseUrl}/${entry.patch}/img/item/${item.imageFile}"
                        alt="${item.name}"
                        title="${item.name} — ${item.price} PO"
-                       class="w-11 h-11 border border-lol-gold rounded block" />
+                       class="w-11 h-11 border border-lol-gold rounded block"
+                       width="44" height="44" loading="lazy" decoding="async" />
                   <figcaption class="text-[0.55rem] text-lol-muted mt-0.5 leading-tight line-clamp-2">${item.name}</figcaption>
                 </figure>
               `,
@@ -94,7 +96,8 @@ export default class BuildView {
       const toggle = () => {
         const expanded = card.getAttribute("aria-expanded") === "true";
         card.setAttribute("aria-expanded", String(!expanded));
-        card.querySelector(".history-items-panel").hidden = expanded;
+        const panel = card.querySelector(".history-items-panel");
+        panel.style.display = expanded ? "none" : "";
         card.querySelector("span[aria-hidden]").textContent = expanded ? "▾" : "▴";
       };
       card.addEventListener("click", toggle);
@@ -112,17 +115,20 @@ export default class BuildView {
       <img src="https://ddragon.leagueoflegends.com/cdn/${currentPatch}/img/champion/${champion.id}.png"
            class="w-20 h-20 border-2 border-lol-gold rounded-full cursor-pointer sprite-tooltip"
            alt="Portrait de ${champion.name}"
+           width="80" height="80" decoding="async"
            data-title="${champion.name}"
            data-desc="${champion.blurb.replace(/"/g, "&quot;")}">
       <div class="flex flex-col gap-1">
         <img src="https://ddragon.leagueoflegends.com/cdn/${currentPatch}/img/spell/${spells[0].id}.png"
              class="w-9 h-9 border border-lol-gold rounded cursor-pointer sprite-tooltip"
              alt="Sort ${spells[0].name}"
+             width="36" height="36" decoding="async"
              data-title="${spells[0].name}"
              data-desc="${spells[0].description}">
         <img src="https://ddragon.leagueoflegends.com/cdn/${currentPatch}/img/spell/${spells[1].id}.png"
              class="w-9 h-9 border border-lol-gold rounded cursor-pointer sprite-tooltip"
              alt="Sort ${spells[1].name}"
+             width="36" height="36" decoding="async"
              data-title="${spells[1].name}"
              data-desc="${spells[1].description}">
       </div>
@@ -139,6 +145,7 @@ export default class BuildView {
       return `<img src="${baseUrl}${rune.icon}"
                    class="${sizeClass} rounded-full bg-black cursor-pointer sprite-tooltip"
                    alt="Rune ${rune.name}"
+                   loading="lazy" decoding="async"
                    data-title="${rune.name}"
                    data-desc="${rune.longDesc.replace(/"/g, "&quot;")}">`;
     };
@@ -169,6 +176,10 @@ export default class BuildView {
       img.src = `https://ddragon.leagueoflegends.com/cdn/${currentPatch}/img/item/${item.image.full}`;
       img.className = "w-16 h-16 border-2 border-lol-gold m-1 rounded cursor-pointer transition-transform hover:scale-110 hover:border-lol-gold-light sprite-tooltip";
       img.alt = `Objet : ${item.name}`;
+      img.loading = "lazy";
+      img.decoding = "async";
+      img.width = 64;
+      img.height = 64;
       img.dataset.title = item.name;
       img.dataset.price = `Prix : ${item.gold.total} PO`;
       img.dataset.desc = item.description;

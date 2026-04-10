@@ -27,6 +27,26 @@
   margin-bottom: 10px;
 }
 
+/* Burger menu */
+@media (min-width: 768px) {
+  #nav-menu {
+    display: flex !important;
+  }
+  #burger-btn {
+    display: none !important;
+  }
+}
+
+.burger-open .burger-bar:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+.burger-open .burger-bar:nth-child(2) {
+  opacity: 0;
+}
+.burger-open .burger-bar:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
 /* Lien actif de la navbar */
 .nav-active {
   color: #f0e6d2 !important;
