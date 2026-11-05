@@ -15,7 +15,7 @@ export default class BuildController {
     this.view.showLoading();
     try {
       await this.apiService.initialize();
-      this.view.renderHistory(this._loadHistory());
+      this.view.renderHistory(this._loadHistory(), this.apiService.getCurrentPatch());
       this.refreshBuild();
     } catch (error) {
       this.view.showError(
@@ -48,7 +48,7 @@ export default class BuildController {
     this.view.renderBuild(newBuild, this.apiService.getCurrentPatch());
 
     this._saveToHistory(newBuild, role, this.apiService.getCurrentPatch());
-    this.view.renderHistory(this._loadHistory());
+    this.view.renderHistory(this._loadHistory(), this.apiService.getCurrentPatch());
   }
 
   async shareBuild() {

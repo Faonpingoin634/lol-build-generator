@@ -38,7 +38,7 @@ export default class BuildView {
     this._renderInventory(fullBuild.inventory, currentPatch);
   }
 
-  renderHistory(history) {
+  renderHistory(history, currentPatch) {
     if (!history || history.length === 0) {
       this.historySection.style.display = "none";
       return;
@@ -52,13 +52,17 @@ export default class BuildView {
       <ul class="list-none p-0 m-0">
         ${history
           .map(
-            (entry, index) => `
+            (entry, index) => {
+              // Les visuels suivent toujours le patch courant : un build sauvegardé
+              // il y a plusieurs patchs afficherait sinon l'ancien art du champion.
+              const imgPatch = currentPatch || entry.patch;
+              return `
           <li class="bg-lol-card rounded-lg border border-[#333] mb-2 cursor-pointer transition-colors hover:border-lol-gold focus:border-lol-gold focus:outline-none"
               data-index="${index}" aria-expanded="false" tabindex="0" role="button"
               aria-label="Voir le build de ${entry.championName}">
             <div class="flex items-center gap-2 px-3 py-2">
               <figure class="m-0">
-                <img src="${baseUrl}/${entry.patch}/img/champion/${entry.championId}.png"
+                <img src="${baseUrl}/${imgPatch}/img/champion/${entry.championId}.png"
                      alt="${entry.championName}"
                      class="w-9 h-9 rounded-full border border-lol-gold"
                      width="36" height="36" loading="lazy" decoding="async" />
@@ -74,7 +78,7 @@ export default class BuildView {
                 .map(
                   (item) => `
                 <figure class="m-0 text-center w-[52px]">
-                  <img src="${baseUrl}/${entry.patch}/img/item/${item.imageFile}"
+                  <img src="${baseUrl}/${imgPatch}/img/item/${item.imageFile}"
                        alt="${item.name}"
                        title="${item.name} — ${item.price} PO"
                        class="w-11 h-11 border border-lol-gold rounded block"
@@ -86,7 +90,8 @@ export default class BuildView {
                 .join("")}
             </div>
           </li>
-        `,
+        `;
+            },
           )
           .join("")}
       </ul>
