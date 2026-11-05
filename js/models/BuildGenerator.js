@@ -1,16 +1,8 @@
 export default class BuildGenerator {
   constructor(apiService) {
     this.apiService = apiService;
-    this.bootIds = [
-      "3006",
-      "3009",
-      "3020",
-      "3047",
-      "3111",
-      "3158",
-      "3200",
-      "3202",
-    ];
+    this.minBootsGold = 900;
+    this.maxStandardItemId = 100000;
     this.bannedItems = [
       "663039",
       "663060",
@@ -35,6 +27,24 @@ export default class BuildGenerator {
 
   _getRandomElement(array) {
     return array[Math.floor(Math.random() * array.length)];
+  }
+
+  _isUpgradedBoots(item, allItems) {
+    return (item.from ?? []).some((componentId) => {
+      const component = allItems[componentId];
+      return (
+        component?.tags?.includes("Boots") &&
+        component.gold?.total >= this.minBootsGold
+      );
+    });
+  }
+
+  _isStandardItem(id, item) {
+    return (
+      Number(id) < this.maxStandardItemId &&
+      item.from?.length > 0 &&
+      !/qu[êe]te/i.test(item.description ?? "")
+    );
   }
 
   generateChampionAndSpells(role, championTypeFilter = null) {
@@ -132,8 +142,16 @@ export default class BuildGenerator {
 
       if (this.bannedItems.includes(String(id))) return;
 
-      if (!isAram && this.bootIds.includes(String(id))) {
-        availableBoots.push(item);
+      const isUpgradedBoots = this._isUpgradedBoots(item, allItems);
+      const isBoots =
+        (tags.includes("Boots") || isUpgradedBoots) &&
+        item.maps?.[mapId] === true &&
+        item.gold?.purchasable === true &&
+        item.gold?.total >= this.minBootsGold;
+
+      if (isBoots) {
+        const canUseBoots = !isUpgradedBoots || role === "mid";
+        if (!isAram && canUseBoots) availableBoots.push(item);
         return;
       }
 
@@ -145,6 +163,7 @@ export default class BuildGenerator {
         item.maps?.[mapId] === true &&
         item.gold?.purchasable === true &&
         isNotComponent &&
+        (!isAram || this._isStandardItem(id, item)) &&
         item.gold?.total >= 1500 &&
         !tags.includes("Consumable") &&
         !tags.includes("Jungle") &&
@@ -155,14 +174,8 @@ export default class BuildGenerator {
     });
 
     let itemCount = 6;
-    if (!isAram) {
-      if (role === "adc") {
-        itemCount = 6;
-      } else if (role === "support") {
-        itemCount = 4;
-      } else {
-        itemCount = 5;
-      }
+    if (!isAram && role !== "adc") {
+      itemCount = role === "support" ? 4 : 5;
     }
 
     let chosenItems = [];
@@ -182,12 +195,14 @@ export default class BuildGenerator {
       return chosenItems;
     }
 
-    let chosenBoots = allItems["3006"];
-    if (availableBoots.length > 0) {
-      chosenBoots = this._getRandomElement(availableBoots);
-    }
+    const chosenBoots =
+      availableBoots.length > 0
+        ? this._getRandomElement(availableBoots)
+        : allItems["3006"];
 
-    let finalInventory = [chosenBoots, ...chosenItems];
+    let finalInventory = chosenBoots
+      ? [chosenBoots, ...chosenItems]
+      : [...chosenItems];
     for (let i = finalInventory.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [finalInventory[i], finalInventory[j]] = [finalInventory[j], finalInventory[i]];
