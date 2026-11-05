@@ -6,21 +6,38 @@ export default class BuildController {
     this.apiService = apiService;
     this.buildGenerator = buildGenerator;
     this.view = view;
+    this.isStarting = false;
 
-    this.view.refreshButton.addEventListener("click", () => this.refreshBuild());
+    this.view.refreshButton.addEventListener("click", () => this._handleRefreshClick());
     this.view.shareButton.addEventListener("click", () => this.shareBuild());
   }
 
   async start() {
+    if (this.isStarting) return;
+    this.isStarting = true;
     this.view.showLoading();
     try {
       await this.apiService.initialize();
       this.view.renderHistory(this._loadHistory(), this.apiService.getCurrentPatch());
       this.refreshBuild();
-    } catch (error) {
+    } catch {
       this.view.showError(
-        "Impossible de charger les données. Vérifiez votre connexion et rechargez la page.",
+        "Impossible de charger les données. Vérifiez votre connexion puis réessayez.",
       );
+    } finally {
+      this.isStarting = false;
+    }
+  }
+
+  _handleRefreshClick() {
+    if (!this.apiService.isReady()) {
+      this.start();
+      return;
+    }
+    try {
+      this.refreshBuild();
+    } catch {
+      this.view.showError("La génération du build a échoué. Réessayez.");
     }
   }
 
@@ -62,7 +79,7 @@ export default class BuildController {
       link.href = image;
       link.download = "mon-build-lol.png";
       link.click();
-    } catch (error) {
+    } catch {
       this.view.showError(
         "La capture d'écran a échoué. Réessayez dans quelques instants.",
       );
@@ -90,7 +107,7 @@ export default class BuildController {
 
     try {
       localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
-    } catch (_) {
+    } catch {
       // localStorage unavailable, history not saved
     }
   }
@@ -98,7 +115,7 @@ export default class BuildController {
   _loadHistory() {
     try {
       return JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
-    } catch (_) {
+    } catch {
       return [];
     }
   }

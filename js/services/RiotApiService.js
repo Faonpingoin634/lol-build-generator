@@ -35,11 +35,22 @@ export default class RiotApiService {
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
     }
 
+    const [itemsData, champsData, spellsData, runesData] = await Promise.all([
+      itemsResponse.json(),
+      champsResponse.json(),
+      spellsResponse.json(),
+      runesResponse.json(),
+    ]);
+
+    this.items = itemsData.data;
+    this.champions = champsData.data;
+    this.spells = spellsData.data;
+    this.runes = runesData;
     this.currentPatch = currentPatch;
-    this.items = (await itemsResponse.json()).data;
-    this.champions = (await champsResponse.json()).data;
-    this.spells = (await spellsResponse.json()).data;
-    this.runes = await runesResponse.json();
+  }
+
+  isReady() {
+    return this.currentPatch !== null;
   }
 
   getCurrentPatch() {
