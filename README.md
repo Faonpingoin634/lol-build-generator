@@ -15,7 +15,7 @@ Ce projet a été conçu pour offrir aux joueurs de LoL un moyen fun et imprévi
 ## 🚀 Technologies utilisées
 
 - **HTML5 :** Structure sémantique (`<section>`, `<figure>`, `<figcaption>`).
-- **Tailwind CSS (v3 via CDN Play) :** Intégralité du style via classes utilitaires, palette de couleurs personnalisée (`lol-gold`, `lol-card`, etc.). Le CSS custom résiduel se limite à 25 lignes (tooltip dynamique + balises spéciales Data Dragon).
+- **Tailwind CSS (v3 via CDN Play) :** Intégralité du style via classes utilitaires, palette de couleurs personnalisée (`lol-gold`, `lol-card`, etc.). Le CSS custom résiduel se limite au tooltip dynamique, au menu burger et aux balises spéciales Data Dragon.
 - **JavaScript (ES6+) :** Fetch API, `async/await`, modules ES6, POO avec héritage, manipulation dynamique du DOM.
 - **Riot Data Dragon :** API REST officielle de Riot Games pour des données toujours à jour.
 - **html2canvas (v1.4.1) :** Librairie JS chargée via CDN pour capturer et télécharger le build en image PNG.
@@ -71,7 +71,7 @@ L'application suit le patron **MVC** en JavaScript Vanilla Orienté Objet :
 ```
 js/
 ├── services/
-│   └── RiotApiService.js     — Appels API Data Dragon, mise en cache, vérification HTTP
+│   └── RiotApiService.js     — Appels API Data Dragon, conservation des données en mémoire, vérification HTTP
 ├── models/
 │   └── BuildGenerator.js     — Logique de génération, filtrage et data cleaning
 ├── views/
@@ -79,6 +79,7 @@ js/
 ├── controllers/
 │   ├── BuildController.js    — Orchestration Classique, sauvegarde historique
 │   └── AramController.js     — Hérite de BuildController, surcharge refreshBuild()
+├── nav.js                    — Menu burger, commun aux 3 pages
 ├── main.js                   — Point d'entrée Classique
 └── main-aram.js              — Point d'entrée ARAM
 ```
@@ -92,5 +93,6 @@ La base de données Riot contient de nombreux "items fantômes". Pour garantir u
 - **Filtrage par map** : `map["11"]` (Classique) ou `map["12"]` (ARAM).
 - **Blacklist par ID** pour supprimer les doublons connus.
 - **Anti-doublons par nom** dans l'inventaire généré.
-- **Gestion des bottes** : une seule paire par build en mode Classique.
+- **Objets de quête et variantes exclus en ARAM** : pas d'ID spéciaux (`>= 100000`), d'objets sans recette ni d'objets de quête.
+- **Gestion des bottes** : une seule paire par build en mode Classique ; les bottes améliorées sont réservées au Mid.
 - **Vérification `response.ok`** sur chaque appel fetch avant de parser le JSON.
