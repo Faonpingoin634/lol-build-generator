@@ -173,21 +173,6 @@
         <p class="font-bold">&copy; 2026 - LoL Build Generator. Tous droits réservés.</p>
       </div>
     </footer>
-    <script>
-      const burgerBtn = document.getElementById('burger-btn');
-      const navMenu = document.getElementById('nav-menu');
-      burgerBtn.addEventListener('click', () => {
-        const open = navMenu.classList.toggle('hidden');
-        burgerBtn.setAttribute('aria-expanded', String(!open));
-        burgerBtn.classList.toggle('burger-open', !open);
-      });
-      document.addEventListener('click', (e) => {
-        if (!burgerBtn.contains(e.target) && !navMenu.contains(e.target)) {
-          navMenu.classList.add('hidden');
-          burgerBtn.setAttribute('aria-expanded', 'false');
-          burgerBtn.classList.remove('burger-open');
-        }
-      });
-    </script>
+    <script type="module" src="../js/nav.js"></script>
   </body>
 </html>
