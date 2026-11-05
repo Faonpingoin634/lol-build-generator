@@ -79,6 +79,7 @@ export default class BuildView {
                   (item) => `
                 <figure class="m-0 text-center w-[52px]">
                   <img src="${baseUrl}/${imgPatch}/img/item/${item.imageFile}"
+                       data-fallback-src="${baseUrl}/${entry.patch}/img/item/${item.imageFile}"
                        alt="${item.name}"
                        title="${item.name} — ${item.price} PO"
                        class="w-11 h-11 border border-lol-gold rounded block"
@@ -96,6 +97,17 @@ export default class BuildView {
           .join("")}
       </ul>
     `;
+
+    // Un objet retiré du jeu n'a plus d'image au patch courant.
+    this.historySection.querySelectorAll("img[data-fallback-src]").forEach((img) => {
+      img.addEventListener(
+        "error",
+        () => {
+          img.src = img.dataset.fallbackSrc;
+        },
+        { once: true },
+      );
+    });
 
     this.historySection.querySelectorAll("li[role='button']").forEach((card) => {
       const toggle = () => {
